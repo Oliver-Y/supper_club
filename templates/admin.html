@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Admin — Supper Club{% endblock %}
+
+{% block content %}
+{% if not authed %}
+<section class="admin-login">
+    <h1>Admin</h1>
+    <form method="POST" action="{{ url_for('admin_login') }}" class="login-form">
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required autofocus>
+        </div>
+        <button type="submit" class="btn">Log In</button>
+    </form>
+</section>
+
+{% else %}
+<section class="admin-dashboard">
+    <div class="admin-header">
+        <h1>Dashboard</h1>
+        <a href="{{ url_for('admin_logout') }}" class="btn btn-outline btn-sm">Log Out</a>
+    </div>
+
+    <div class="admin-section">
+        <h2>Create Event</h2>
+        <form method="POST" action="{{ url_for('create_event') }}" class="event-form">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="capacity">Capacity</label>
+                    <input type="number" id="capacity" name="capacity" min="1" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" required>
+            </div>
+            <div class="form-group">
+                <label for="menu_description">Menu</label>
+                <textarea id="menu_description" name="menu_description" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn">Create Event</button>
+        </form>
+    </div>
+
+    {% for item in event_data %}
+    <div class="admin-section admin-event">
+        <div class="admin-event-header">
+            <h2>{{ item.event.title }}</h2>
+            <span class="badge {% if item.event.date < today %}badge-past{% endif %}">
+                {{ item.event.date }}
+            </span>
+        </div>
+        <p class="event-meta">
+            {{ item.event.location }} &middot;
+            {{ item.total_guests }}/{{ item.event.capacity }} guests
+        </p>
+
+        <details class="event-edit-toggle">
+            <summary>Edit Event</summary>
+            <form method="POST" action="{{ url_for('update_event', event_id=item.event.id) }}" class="event-form">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" name="title" value="{{ item.event.title }}" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" name="date" value="{{ item.event.date }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Capacity</label>
+                        <input type="number" name="capacity" value="{{ item.event.capacity }}" min="1" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" name="location" value="{{ item.event.location }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Menu</label>
+                    <textarea name="menu_description" rows="3" required>{{ item.event.menu_description }}</textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-sm">Save</button>
+                </div>
+            </form>
+            <form method="POST" action="{{ url_for('delete_event', event_id=item.event.id) }}"
+                  onsubmit="return confirm('Delete this event and all its registrations?')" style="margin-top: 0.5rem;">
+                <button type="submit" class="btn btn-danger btn-sm">Delete Event</button>
+            </form>
+        </details>
+
+        {% if item.registrations %}
+        {% for reg in item.registrations %}
+        <form method="POST" action="{{ url_for('update_registration', reg_id=reg.id) }}" class="reg-row">
+            <div class="reg-fields">
+                <input type="text" name="name" value="{{ reg.name }}" class="reg-input" placeholder="Name">
+                <input type="tel" name="phone" value="{{ reg.phone }}" class="reg-input" placeholder="Phone">
+                <input type="number" name="num_guests" value="{{ reg.num_guests }}" class="reg-input reg-input-sm" min="1">
+                <input type="text" name="dietary_restrictions" value="{{ reg.dietary_restrictions }}" class="reg-input" placeholder="Dietary">
+            </div>
+            <div class="reg-actions">
+                <button type="submit" class="btn btn-sm">Save</button>
+                <button type="submit" formaction="{{ url_for('delete_registration', reg_id=reg.id) }}" class="btn btn-danger btn-sm"
+                        onclick="return confirm('Remove this guest?')">Remove</button>
+            </div>
+        </form>
+        {% endfor %}
+        {% else %}
+        <p class="no-registrations">No registrations yet.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</section>
+{% endif %}
+{% endblock %}

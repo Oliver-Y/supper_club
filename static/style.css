@@ -1,0 +1,632 @@
+/* ── Reset & Base ────────────────────────────────────────── */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --stone: #E8E2D9;
+    --stone-light: #F0EBE3;
+    --cream: #F5F0E8;
+    --paper: #FAF6EF;
+    --ink: #2C2926;
+    --ink-light: #5C5550;
+    --ink-faded: #8A837C;
+    --rust: #B5654A;
+    --rust-dark: #964F38;
+    --rule: #D4CEC5;
+    --white: #FFFDF9;
+    --red: #A63D2F;
+    --green: #5A7A5A;
+    --font-serif: 'Instrument Serif', Georgia, serif;
+    --font-sans: 'DM Sans', -apple-system, sans-serif;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.65;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    /* subtle paper grain */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+/* ── Container ──────────────────────────────────────────── */
+
+.container {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* ── Nav ────────────────────────────────────────────────── */
+
+.nav {
+    padding: 1.75rem 0;
+}
+
+.nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.nav-brand {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+}
+
+.nav-link {
+    font-size: 0.8rem;
+    color: var(--ink-faded);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+}
+
+.nav-link:hover {
+    color: var(--ink);
+}
+
+/* ── Main ───────────────────────────────────────────────── */
+
+main {
+    flex: 1;
+    padding: 2rem 0 4rem;
+}
+
+/* ── Hero ───────────────────────────────────────────────── */
+
+.hero {
+    text-align: center;
+    margin-bottom: 3.5rem;
+    padding: 1rem 0;
+}
+
+.hero h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(2.25rem, 6vw, 3.5rem);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+}
+
+.hero-sub {
+    font-size: 1rem;
+    color: var(--ink-light);
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+/* ── Decorative divider ─────────────────────────────────── */
+
+.menu-section,
+.event-details {
+    position: relative;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+}
+
+.menu-section::after,
+.event-details::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    background: var(--rule);
+}
+
+/* ── Event Card ─────────────────────────────────────────── */
+
+.event-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 2.5rem 2rem;
+    margin-bottom: 3rem;
+    position: relative;
+    /* subtle tape/pinned effect */
+    box-shadow:
+        0 1px 2px rgba(0,0,0,0.04),
+        0 4px 16px rgba(0,0,0,0.03);
+}
+
+.event-card::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48px;
+    height: 12px;
+    background: var(--stone);
+    opacity: 0.7;
+    border-radius: 1px;
+}
+
+.event-label {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--rust);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+.event-card h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 400;
+    margin-bottom: 1.75rem;
+    line-height: 1.2;
+}
+
+.event-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.event-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.detail-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faded);
+    font-weight: 500;
+}
+
+.detail-value {
+    font-size: 0.95rem;
+    color: var(--ink);
+}
+
+/* ── Menu ───────────────────────────────────────────────── */
+
+.menu-section h3,
+.register-section h3 {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 400;
+    font-style: italic;
+    margin-bottom: 0.6rem;
+}
+
+.menu-section p {
+    color: var(--ink-light);
+    white-space: pre-line;
+    line-height: 1.8;
+}
+
+/* ── Forms ──────────────────────────────────────────────── */
+
+.form-group {
+    margin-bottom: 1.1rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--ink-faded);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.02em;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    color: var(--ink);
+    background: var(--white);
+    transition: border-color 0.2s;
+}
+
+.form-group input::placeholder {
+    color: var(--ink-faded);
+    font-style: italic;
+    opacity: 0.6;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--rust);
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-group-grow {
+    flex: 2 !important;
+}
+
+/* ── Buttons ────────────────────────────────────────────── */
+
+.btn {
+    display: inline-block;
+    padding: 0.65rem 1.75rem;
+    background: var(--ink);
+    color: var(--cream);
+    border: 1px solid var(--ink);
+    border-radius: 2px;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    background: transparent;
+    color: var(--ink);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--rule);
+}
+
+.btn-outline:hover {
+    border-color: var(--ink);
+}
+
+.btn-danger {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--white);
+}
+
+.btn-danger:hover {
+    background: transparent;
+    color: var(--red);
+}
+
+.btn-sm {
+    padding: 0.35rem 1rem;
+    font-size: 0.78rem;
+}
+
+/* ── Fully Booked ───────────────────────────────────────── */
+
+.fully-booked {
+    text-align: center;
+    padding: 2rem 1rem;
+    border: 1px dashed var(--rule);
+}
+
+.fully-booked p {
+    font-style: italic;
+    color: var(--ink-faded);
+}
+
+/* ── No Event ───────────────────────────────────────────── */
+
+.no-event {
+    text-align: center;
+    padding: 5rem 1rem;
+}
+
+.no-event-inner {
+    max-width: 340px;
+    margin: 0 auto;
+}
+
+.no-event h2 {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 400;
+    font-style: italic;
+    margin-bottom: 0.75rem;
+}
+
+.no-event p {
+    color: var(--ink-faded);
+}
+
+/* ── About ──────────────────────────────────────────────── */
+
+.about {
+    padding: 1.5rem 0 2rem;
+    border-top: 1px solid var(--rule);
+}
+
+.about-inner {
+    max-width: 520px;
+}
+
+.about h2 {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 400;
+    font-style: italic;
+    margin-bottom: 0.6rem;
+}
+
+.about p {
+    color: var(--ink-light);
+    font-size: 0.92rem;
+    line-height: 1.75;
+}
+
+/* ── Confirmation ───────────────────────────────────────── */
+
+.confirmation {
+    text-align: center;
+    padding: 3rem 0;
+}
+
+.confirmation h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    font-weight: 400;
+    font-style: italic;
+    margin-bottom: 0.4rem;
+}
+
+.confirmation-sub {
+    color: var(--ink-faded);
+    margin-bottom: 2.5rem;
+    font-style: italic;
+}
+
+.confirmation-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 2rem;
+    text-align: left;
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    position: relative;
+    transform: rotate(-0.5deg);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* ── Flash Messages ─────────────────────────────────────── */
+
+.flashes {
+    margin-bottom: 1.5rem;
+}
+
+.flash {
+    padding: 0.7rem 1rem;
+    border-radius: 2px;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid;
+}
+
+.flash-error {
+    background: #F9EEEC;
+    color: var(--red);
+    border-left-color: var(--red);
+}
+
+.flash-success {
+    background: #EDF2ED;
+    color: var(--green);
+    border-left-color: var(--green);
+}
+
+/* ── Admin ──────────────────────────────────────────────── */
+
+.admin-login {
+    max-width: 300px;
+    margin: 3rem auto;
+    text-align: center;
+}
+
+.admin-login h1 {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin-bottom: 1.75rem;
+}
+
+.login-form .btn {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 2rem;
+}
+
+.admin-header h1 {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    font-weight: 400;
+}
+
+.admin-section {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 1.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.admin-section h2 {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 400;
+    margin-bottom: 1.25rem;
+}
+
+.admin-event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.4rem;
+}
+
+.event-meta {
+    font-size: 0.85rem;
+    color: var(--ink-faded);
+    margin-bottom: 1rem;
+}
+
+.badge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--rule);
+    color: var(--ink-faded);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+.badge-past {
+    opacity: 0.5;
+}
+
+.event-edit-toggle {
+    margin-bottom: 1rem;
+}
+
+.event-edit-toggle summary {
+    font-size: 0.82rem;
+    color: var(--rust);
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+/* ── Registration Rows ───────────────────────────────────── */
+
+.reg-row {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--rule);
+}
+
+.reg-row:last-of-type {
+    border-bottom: none;
+}
+
+.reg-fields {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.reg-input {
+    flex: 1;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    color: var(--ink);
+    background: var(--white);
+}
+
+.reg-input:focus {
+    outline: none;
+    border-color: var(--rust);
+}
+
+.reg-input-sm {
+    max-width: 60px;
+}
+
+.reg-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.no-registrations {
+    font-size: 0.85rem;
+    color: var(--ink-faded);
+    font-style: italic;
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+
+.footer {
+    padding: 2.5rem 0;
+    text-align: center;
+    margin-top: auto;
+}
+
+.footer p {
+    font-size: 0.78rem;
+    color: var(--ink-faded);
+    font-style: italic;
+    letter-spacing: 0.01em;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+    .event-card {
+        padding: 2rem 1.25rem;
+    }
+
+    .event-details {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .admin-event-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.4rem;
+    }
+
+    .reg-fields {
+        flex-wrap: wrap;
+    }
+
+    .reg-input {
+        min-width: calc(50% - 0.25rem);
+    }
+}

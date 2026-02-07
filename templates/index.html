@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if event %}
+<section class="event-card">
+    <span class="event-label">Up Next</span>
+    <h2>{{ event.title }}</h2>
+    <div class="event-details">
+        <div class="event-detail">
+            <span class="detail-label">When</span>
+            <span class="detail-value">{{ event.date }}</span>
+        </div>
+        <div class="event-detail">
+            <span class="detail-label">Where</span>
+            <span class="detail-value">{{ event.location }}</span>
+        </div>
+        <div class="event-detail">
+            <span class="detail-label">Seats Left</span>
+            <span class="detail-value">{{ spots_left }}</span>
+        </div>
+    </div>
+
+    {% if spots_left > 0 %}
+    <div class="register-section">
+        <h3>Grab a seat</h3>
+        <form method="POST" action="{{ url_for('register') }}" class="register-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="num_guests">How many?</label>
+                    <select id="num_guests" name="num_guests">
+                        {% for i in range(1, [spots_left, 6] | min + 1) %}
+                        <option value="{{ i }}">{{ i }}{% if i == 1 %} (just me){% endif %}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group form-group-grow">
+                    <label for="dietary_restrictions">Dietary stuff</label>
+                    <input type="text" id="dietary_restrictions" name="dietary_restrictions" placeholder="allergies, vegetarian, etc.">
+                </div>
+            </div>
+            <button type="submit" class="btn">Count me in</button>
+        </form>
+    </div>
+    {% else %}
+    <div class="fully-booked">
+        <p>This one's full! We'll have another one soon&mdash;promise.</p>
+    </div>
+    {% endif %}
+</section>
+{% else %}
+<section class="no-event">
+    <div class="no-event-inner">
+        <h2>Nothing on the calendar yet</h2>
+        <p>We're scheming up something good. Check back soon.</p>
+    </div>
+</section>
+{% endif %}
+
+<section class="about">
+    <div class="about-inner">
+        <h2>What's this?</h2>
+        <p>Supper Club is a series of casual, communal dinners. One long table, one small group of people, a couple of courses. Maybe coffee for desert on a patio</p>
+    </div>
+</section>
+{% endblock %}

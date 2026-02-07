@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}You're in — Supper Club{% endblock %}
+
+{% block content %}
+<section class="confirmation">
+    <h1>You're in!</h1>
+    <p class="confirmation-sub">See you there. Come hungry.</p>
+
+    <div class="confirmation-card">
+        <div class="event-detail">
+            <span class="detail-label">What</span>
+            <span class="detail-value">{{ reg.title }}</span>
+        </div>
+        <div class="event-detail">
+            <span class="detail-label">When</span>
+            <span class="detail-value">{{ reg.date }}</span>
+        </div>
+        <div class="event-detail">
+            <span class="detail-label">Where</span>
+            <span class="detail-value">{{ reg.location }}</span>
+        </div>
+        <div class="event-detail">
+            <span class="detail-label">Name</span>
+            <span class="detail-value">{{ reg.name }}</span>
+        </div>
+        <div class="event-detail">
+            <span class="detail-label">Seats</span>
+            <span class="detail-value">{{ reg.num_guests }}</span>
+        </div>
+        {% if reg.dietary_restrictions %}
+        <div class="event-detail">
+            <span class="detail-label">Dietary</span>
+            <span class="detail-value">{{ reg.dietary_restrictions }}</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <a href="{{ url_for('index') }}" class="btn btn-outline">&larr; Back home</a>
+</section>
+{% endblock %}
