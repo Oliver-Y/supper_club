@@ -52,7 +52,15 @@
             </div>
             <div class="form-group">
                 <label for="charity">Charity</label>
-                <input type="text" id="charity" name="charity" placeholder="e.g. Immigration Defense Fund">
+                <input type="text" id="charity" name="charity" placeholder="e.g. Immigrant Defense Project">
+            </div>
+            <div class="form-group">
+                <label for="charity_url">Charity URL</label>
+                <input type="url" id="charity_url" name="charity_url" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label for="suggested_price">Suggested Price</label>
+                <input type="text" id="suggested_price" name="suggested_price" placeholder="e.g. $25">
             </div>
             <button type="submit" class="btn">Create Event</button>
         </form>
@@ -104,7 +112,15 @@
                 </div>
                 <div class="form-group">
                     <label>Charity</label>
-                    <input type="text" name="charity" value="{{ item.event.charity or '' }}" placeholder="e.g. Immigration Defense Fund">
+                    <input type="text" name="charity" value="{{ item.event.charity or '' }}" placeholder="e.g. Immigrant Defense Project">
+                </div>
+                <div class="form-group">
+                    <label>Charity URL</label>
+                    <input type="url" name="charity_url" value="{{ item.event.charity_url or '' }}" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Suggested Price</label>
+                    <input type="text" name="suggested_price" value="{{ item.event.suggested_price or '' }}" placeholder="e.g. $25">
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn btn-sm">Save</button>

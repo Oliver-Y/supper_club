@@ -18,10 +18,22 @@
             <span class="detail-label">Seats Left</span>
             <span class="detail-value">{{ spots_left }}</span>
         </div>
+        {% if event.suggested_price %}
+        <div class="event-detail">
+            <span class="detail-label">Suggested</span>
+            <span class="detail-value">{{ event.suggested_price }}</span>
+        </div>
+        {% endif %}
         {% if event.charity %}
         <div class="event-detail event-detail-charity">
-            <span class="detail-label">Benefiting</span>
-            <span class="detail-value detail-value-charity">{{ event.charity }}</span>
+            <span class="detail-label">Charity</span>
+            <span class="detail-value detail-value-charity">
+                {% if event.charity_url %}
+                <a href="{{ event.charity_url }}" target="_blank" rel="noopener">{{ event.charity }}</a>
+                {% else %}
+                {{ event.charity }}
+                {% endif %}
+            </span>
         </div>
         {% endif %}
     </div>
@@ -79,7 +91,7 @@
 <section class="pricing">
     <div class="pricing-inner">
         <h2>How it works</h2>
-        <p>Pay as you feel. Suggested $25 per person. All proceeds benefit {{ event.charity }}.</p>
+        <p>Pay as you feel, suggested price on event. All proceeds go to charity.</p>
     </div>
 </section>
 {% endif %}
