@@ -116,9 +116,7 @@ main {
 /* ── Event Blurb ────────────────────────────────────────── */
 
 .event-blurb {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     color: var(--ink-light);
     line-height: 1.6;
     margin-bottom: 2rem;
