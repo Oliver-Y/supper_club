@@ -113,6 +113,17 @@ main {
     line-height: 1.7;
 }
 
+/* ── Event Blurb ────────────────────────────────────────── */
+
+.event-blurb {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--ink-light);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
 /* ── Decorative divider ─────────────────────────────────── */
 
 .menu-section,

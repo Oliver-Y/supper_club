@@ -20,6 +20,10 @@
         </div>
     </div>
 
+    {% if event.menu_description and event.menu_description != 'TBD' %}
+    <p class="event-blurb">{{ event.menu_description }}</p>
+    {% endif %}
+
     {% if spots_left > 0 %}
     <div class="register-section">
         <h3>Grab a seat</h3>

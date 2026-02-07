@@ -64,7 +64,7 @@ with app.app_context():
                 "March Supper",
                 "2026-03-22",
                 "555 Bryant Street",
-                "TBD",
+                "Bring that one person you don't know that well but want to get to know better.",
                 14,
             ),
         )
