@@ -24,6 +24,12 @@
     <p class="event-blurb">{{ event.menu_description }}</p>
     {% endif %}
 
+    {% if event.charity %}
+    <p class="event-charity">
+        All proceeds benefit <strong>{{ event.charity }}</strong>
+    </p>
+    {% endif %}
+
     {% if spots_left > 0 %}
     <div class="register-section">
         <form method="POST" action="{{ url_for('register') }}" class="register-form">
@@ -65,6 +71,15 @@
     <div class="no-event-inner">
         <h2>Nothing on the calendar yet</h2>
         <p>We're scheming up something good. Check back soon.</p>
+    </div>
+</section>
+{% endif %}
+
+{% if event and event.charity %}
+<section class="pricing">
+    <div class="pricing-inner">
+        <h2>How it works</h2>
+        <p>Pay as you feel. Suggested $25 per person. All proceeds benefit {{ event.charity }}.</p>
     </div>
 </section>
 {% endif %}

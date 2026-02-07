@@ -62,7 +62,7 @@ with app.app_context():
     db = get_db()
     if not db.execute("SELECT 1 FROM events LIMIT 1").fetchone():
         db.execute(
-            "INSERT INTO events (title, date, time, location, menu_description, capacity) VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT INTO events (title, date, time, location, menu_description, capacity, charity) VALUES (?, ?, ?, ?, ?, ?, ?)",
             (
                 "March Supper",
                 "2026-03-22",
@@ -70,6 +70,7 @@ with app.app_context():
                 "555 Bryant Street",
                 "Bring that one person you don't know well but want to know better!",
                 14,
+                "Immigration Defense Fund",
             ),
         )
         db.commit()
@@ -219,6 +220,7 @@ def create_event():
     location = request.form.get("location", "").strip()
     menu_description = request.form.get("menu_description", "").strip()
     capacity = int(request.form.get("capacity", 0))
+    charity = request.form.get("charity", "").strip()
 
     if not all([title, event_date, location, menu_description, capacity]):
         flash("All fields are required.", "error")
@@ -226,8 +228,8 @@ def create_event():
 
     db = get_db()
     db.execute(
-        "INSERT INTO events (title, date, time, location, menu_description, capacity) VALUES (?, ?, ?, ?, ?, ?)",
-        (title, event_date, event_time or None, location, menu_description, capacity),
+        "INSERT INTO events (title, date, time, location, menu_description, capacity, charity) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (title, event_date, event_time or None, location, menu_description, capacity, charity or None),
     )
     db.commit()
     flash("Event created.", "success")
@@ -243,11 +245,12 @@ def update_event(event_id):
     location = request.form.get("location", "").strip()
     menu_description = request.form.get("menu_description", "").strip()
     capacity = int(request.form.get("capacity", 0))
+    charity = request.form.get("charity", "").strip()
 
     db = get_db()
     db.execute(
-        "UPDATE events SET title=?, date=?, time=?, location=?, menu_description=?, capacity=? WHERE id=?",
-        (title, event_date, event_time or None, location, menu_description, capacity, event_id),
+        "UPDATE events SET title=?, date=?, time=?, location=?, menu_description=?, capacity=?, charity=? WHERE id=?",
+        (title, event_date, event_time or None, location, menu_description, capacity, charity or None, event_id),
     )
     db.commit()
     flash("Event updated.", "success")

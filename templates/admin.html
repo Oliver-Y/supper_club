@@ -50,6 +50,10 @@
                 <label for="menu_description">Blurb</label>
                 <textarea id="menu_description" name="menu_description" rows="3" required></textarea>
             </div>
+            <div class="form-group">
+                <label for="charity">Charity</label>
+                <input type="text" id="charity" name="charity" placeholder="e.g. Immigration Defense Fund">
+            </div>
             <button type="submit" class="btn">Create Event</button>
         </form>
     </div>
@@ -97,6 +101,10 @@
                 <div class="form-group">
                     <label>Blurb</label>
                     <textarea name="menu_description" rows="3" required>{{ item.event.menu_description }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label>Charity</label>
+                    <input type="text" name="charity" value="{{ item.event.charity or '' }}" placeholder="e.g. Immigration Defense Fund">
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn btn-sm">Save</button>

@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS events (
     location TEXT NOT NULL,
     menu_description TEXT NOT NULL,
     capacity INTEGER NOT NULL,
+    charity TEXT,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
