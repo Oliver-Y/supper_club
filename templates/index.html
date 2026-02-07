@@ -8,7 +8,7 @@
     <div class="event-details">
         <div class="event-detail">
             <span class="detail-label">When</span>
-            <span class="detail-value">{{ event.date }}</span>
+            <span class="detail-value">{{ event.date }}{% if event.time %} &middot; {{ event.time }}{% endif %}</span>
         </div>
         <div class="event-detail">
             <span class="detail-label">Where</span>

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Blog — Supper Club{% endblock %}
+
+{% block content %}
+<section class="blog-list">
+    <h1 class="blog-heading">From the table</h1>
+
+    {% if posts %}
+    {% for post in posts %}
+    <a href="{{ url_for('blog_post', post_id=post.id) }}" class="blog-card">
+        <span class="blog-card-date">{{ post.created_at[:10] }}</span>
+        <h2>{{ post.title }}</h2>
+        {% if post.event_title %}
+        <span class="blog-card-event">{{ post.event_title }}</span>
+        {% endif %}
+        <p>{{ post.body[:160] }}{% if post.body|length > 160 %}&hellip;{% endif %}</p>
+    </a>
+    {% endfor %}
+    {% else %}
+    <div class="no-event">
+        <div class="no-event-inner">
+            <h2>Nothing here yet</h2>
+            <p>We haven't written anything down. Check back after the next dinner.</p>
+        </div>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,4 +1,6 @@
+import csv
 import hmac
+import io
 import os
 import sqlite3
 from datetime import date
@@ -9,6 +11,7 @@ from flask import (
     Flask,
     flash,
     g,
+    make_response,
     redirect,
     render_template,
     request,
@@ -59,10 +62,11 @@ with app.app_context():
     db = get_db()
     if not db.execute("SELECT 1 FROM events LIMIT 1").fetchone():
         db.execute(
-            "INSERT INTO events (title, date, location, menu_description, capacity) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO events (title, date, time, location, menu_description, capacity) VALUES (?, ?, ?, ?, ?, ?)",
             (
                 "March Supper",
                 "2026-03-22",
+                "7:00 PM",
                 "555 Bryant Street",
                 "Bring that one person you don't know well but want to know better!",
                 14,
@@ -153,7 +157,7 @@ def register():
 def confirmation(reg_id):
     db = get_db()
     reg = db.execute(
-        "SELECT r.*, e.title, e.date, e.location FROM registrations r JOIN events e ON r.event_id = e.id WHERE r.id = ?",
+        "SELECT r.*, e.title, e.date, e.time, e.location FROM registrations r JOIN events e ON r.event_id = e.id WHERE r.id = ?",
         (reg_id,),
     ).fetchone()
     if not reg:
@@ -180,7 +184,11 @@ def admin():
         ).fetchall()
         total_guests = sum(r["num_guests"] for r in regs)
         event_data.append({"event": ev, "registrations": regs, "total_guests": total_guests})
-    return render_template("admin.html", authed=True, event_data=event_data, today=date.today().isoformat())
+
+    posts = db.execute(
+        "SELECT p.*, e.title AS event_title FROM posts p LEFT JOIN events e ON p.event_id = e.id ORDER BY p.created_at DESC"
+    ).fetchall()
+    return render_template("admin.html", authed=True, event_data=event_data, events=events, posts=posts, today=date.today().isoformat())
 
 
 @app.route("/admin/login", methods=["POST"])
@@ -207,6 +215,7 @@ def admin_logout():
 def create_event():
     title = request.form.get("title", "").strip()
     event_date = request.form.get("date", "").strip()
+    event_time = request.form.get("time", "").strip()
     location = request.form.get("location", "").strip()
     menu_description = request.form.get("menu_description", "").strip()
     capacity = int(request.form.get("capacity", 0))
@@ -217,8 +226,8 @@ def create_event():
 
     db = get_db()
     db.execute(
-        "INSERT INTO events (title, date, location, menu_description, capacity) VALUES (?, ?, ?, ?, ?)",
-        (title, event_date, location, menu_description, capacity),
+        "INSERT INTO events (title, date, time, location, menu_description, capacity) VALUES (?, ?, ?, ?, ?, ?)",
+        (title, event_date, event_time or None, location, menu_description, capacity),
     )
     db.commit()
     flash("Event created.", "success")
@@ -230,14 +239,15 @@ def create_event():
 def update_event(event_id):
     title = request.form.get("title", "").strip()
     event_date = request.form.get("date", "").strip()
+    event_time = request.form.get("time", "").strip()
     location = request.form.get("location", "").strip()
     menu_description = request.form.get("menu_description", "").strip()
     capacity = int(request.form.get("capacity", 0))
 
     db = get_db()
     db.execute(
-        "UPDATE events SET title=?, date=?, location=?, menu_description=?, capacity=? WHERE id=?",
-        (title, event_date, location, menu_description, capacity, event_id),
+        "UPDATE events SET title=?, date=?, time=?, location=?, menu_description=?, capacity=? WHERE id=?",
+        (title, event_date, event_time or None, location, menu_description, capacity, event_id),
     )
     db.commit()
     flash("Event updated.", "success")
@@ -280,4 +290,103 @@ def delete_registration(reg_id):
     db.execute("DELETE FROM registrations WHERE id = ?", (reg_id,))
     db.commit()
     flash("Guest removed.", "success")
+    return redirect(url_for("admin"))
+
+
+@app.route("/admin/events/<int:event_id>/csv")
+@admin_required
+def export_csv(event_id):
+    db = get_db()
+    event = db.execute("SELECT title FROM events WHERE id = ?", (event_id,)).fetchone()
+    if not event:
+        flash("Event not found.", "error")
+        return redirect(url_for("admin"))
+
+    regs = db.execute(
+        "SELECT name, phone, num_guests, dietary_restrictions FROM registrations WHERE event_id = ? ORDER BY created_at",
+        (event_id,),
+    ).fetchall()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["Name", "Phone", "Guests", "Dietary"])
+    for r in regs:
+        writer.writerow([r["name"], r["phone"], r["num_guests"], r["dietary_restrictions"]])
+
+    resp = make_response(output.getvalue())
+    resp.headers["Content-Type"] = "text/csv"
+    resp.headers["Content-Disposition"] = f'attachment; filename="{event["title"]} guests.csv"'
+    return resp
+
+
+# ── Blog routes ────────────────────────────────────────────
+
+
+@app.route("/blog")
+def blog():
+    db = get_db()
+    posts = db.execute(
+        "SELECT p.*, e.title AS event_title FROM posts p LEFT JOIN events e ON p.event_id = e.id ORDER BY p.created_at DESC"
+    ).fetchall()
+    return render_template("blog.html", posts=posts)
+
+
+@app.route("/blog/<int:post_id>")
+def blog_post(post_id):
+    db = get_db()
+    post = db.execute(
+        "SELECT p.*, e.title AS event_title FROM posts p LEFT JOIN events e ON p.event_id = e.id WHERE p.id = ?",
+        (post_id,),
+    ).fetchone()
+    if not post:
+        flash("Post not found.", "error")
+        return redirect(url_for("blog"))
+    return render_template("post.html", post=post)
+
+
+@app.route("/admin/posts", methods=["POST"])
+@admin_required
+def create_post():
+    title = request.form.get("title", "").strip()
+    body = request.form.get("body", "").strip()
+    event_id = request.form.get("event_id", "").strip()
+
+    if not title or not body:
+        flash("Title and body are required.", "error")
+        return redirect(url_for("admin"))
+
+    db = get_db()
+    db.execute(
+        "INSERT INTO posts (title, body, event_id) VALUES (?, ?, ?)",
+        (title, body, int(event_id) if event_id else None),
+    )
+    db.commit()
+    flash("Post created.", "success")
+    return redirect(url_for("admin"))
+
+
+@app.route("/admin/posts/<int:post_id>", methods=["POST"])
+@admin_required
+def update_post(post_id):
+    title = request.form.get("title", "").strip()
+    body = request.form.get("body", "").strip()
+    event_id = request.form.get("event_id", "").strip()
+
+    db = get_db()
+    db.execute(
+        "UPDATE posts SET title=?, body=?, event_id=? WHERE id=?",
+        (title, body, int(event_id) if event_id else None, post_id),
+    )
+    db.commit()
+    flash("Post updated.", "success")
+    return redirect(url_for("admin"))
+
+
+@app.route("/admin/posts/<int:post_id>/delete", methods=["POST"])
+@admin_required
+def delete_post(post_id):
+    db = get_db()
+    db.execute("DELETE FROM posts WHERE id = ?", (post_id,))
+    db.commit()
+    flash("Post deleted.", "success")
     return redirect(url_for("admin"))

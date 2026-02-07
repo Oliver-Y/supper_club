@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} — Supper Club{% endblock %}
+
+{% block content %}
+<article class="blog-post">
+    <header class="blog-post-header">
+        <span class="blog-card-date">{{ post.created_at[:10] }}</span>
+        <h1>{{ post.title }}</h1>
+        {% if post.event_title %}
+        <span class="blog-card-event">{{ post.event_title }}</span>
+        {% endif %}
+    </header>
+
+    <div class="blog-post-body">
+        {{ post.body | e | replace('\n', '<br>') | safe }}
+    </div>
+
+    <a href="{{ url_for('blog') }}" class="btn btn-outline">&larr; All posts</a>
+</article>
+{% endblock %}

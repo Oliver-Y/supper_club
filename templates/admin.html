@@ -34,6 +34,10 @@
                     <input type="date" id="date" name="date" required>
                 </div>
                 <div class="form-group">
+                    <label for="time">Time</label>
+                    <input type="text" id="time" name="time" placeholder="e.g. 7:00 PM">
+                </div>
+                <div class="form-group">
                     <label for="capacity">Capacity</label>
                     <input type="number" id="capacity" name="capacity" min="1" required>
                 </div>
@@ -59,8 +63,10 @@
             </span>
         </div>
         <p class="event-meta">
-            {{ item.event.location }} &middot;
-            {{ item.total_guests }}/{{ item.event.capacity }} guests
+            {{ item.event.location }}
+            {% if item.event.time %}&middot; {{ item.event.time }}{% endif %}
+            &middot; {{ item.total_guests }}/{{ item.event.capacity }} guests
+            &middot; <a href="{{ url_for('export_csv', event_id=item.event.id) }}" class="csv-link">Download CSV</a>
         </p>
 
         <details class="event-edit-toggle">
@@ -74,6 +80,10 @@
                     <div class="form-group">
                         <label>Date</label>
                         <input type="date" name="date" value="{{ item.event.date }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Time</label>
+                        <input type="text" name="time" value="{{ item.event.time or '' }}" placeholder="e.g. 7:00 PM">
                     </div>
                     <div class="form-group">
                         <label>Capacity</label>
@@ -117,6 +127,71 @@
         {% else %}
         <p class="no-registrations">No registrations yet.</p>
         {% endif %}
+    </div>
+    {% endfor %}
+
+    <div class="admin-section">
+        <h2>Create Post</h2>
+        <form method="POST" action="{{ url_for('create_post') }}" class="event-form">
+            <div class="form-group">
+                <label for="post-title">Title</label>
+                <input type="text" id="post-title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="post-event">Event (optional)</label>
+                <select id="post-event" name="event_id">
+                    <option value="">— standalone —</option>
+                    {% for ev in events %}
+                    <option value="{{ ev.id }}">{{ ev.title }} ({{ ev.date }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="post-body">Body</label>
+                <textarea id="post-body" name="body" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn">Create Post</button>
+        </form>
+    </div>
+
+    {% for post in posts %}
+    <div class="admin-section admin-event">
+        <div class="admin-event-header">
+            <h2>{{ post.title }}</h2>
+            <span class="badge">{{ post.created_at[:10] }}</span>
+        </div>
+        {% if post.event_title %}
+        <p class="event-meta">Re: {{ post.event_title }}</p>
+        {% endif %}
+        <details class="event-edit-toggle">
+            <summary>Edit Post</summary>
+            <form method="POST" action="{{ url_for('update_post', post_id=post.id) }}" class="event-form">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" name="title" value="{{ post.title }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Event (optional)</label>
+                    <select name="event_id">
+                        <option value="">— standalone —</option>
+                        {% for ev in events %}
+                        <option value="{{ ev.id }}" {% if post.event_id == ev.id %}selected{% endif %}>{{ ev.title }} ({{ ev.date }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Body</label>
+                    <textarea name="body" rows="5" required>{{ post.body }}</textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-sm">Save</button>
+                </div>
+            </form>
+            <form method="POST" action="{{ url_for('delete_post', post_id=post.id) }}"
+                  onsubmit="return confirm('Delete this post?')" style="margin-top: 0.5rem;">
+                <button type="submit" class="btn btn-danger btn-sm">Delete Post</button>
+            </form>
+        </details>
     </div>
     {% endfor %}
 </section>

@@ -13,7 +13,7 @@
         </div>
         <div class="event-detail">
             <span class="detail-label">When</span>
-            <span class="detail-value">{{ reg.date }}</span>
+            <span class="detail-value">{{ reg.date }}{% if reg.time %} &middot; {{ reg.time }}{% endif %}</span>
         </div>
         <div class="event-detail">
             <span class="detail-label">Where</span>
