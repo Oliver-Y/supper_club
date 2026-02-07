@@ -125,21 +125,7 @@ main {
     font-size: 0.95rem;
     color: var(--ink-light);
     line-height: 1.6;
-    margin-bottom: 1rem;
-}
-
-.event-charity {
-    font-size: 0.85rem;
-    color: var(--ink);
-    line-height: 1.5;
     margin-bottom: 2rem;
-    padding: 0.75rem 1rem;
-    background: var(--stone-light);
-    border-left: 3px solid var(--rust);
-}
-
-.event-charity strong {
-    font-weight: 500;
 }
 
 /* ── Decorative divider ─────────────────────────────────── */
@@ -210,7 +196,7 @@ main {
 
 .event-details {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 0.75rem;
 }
 
@@ -231,6 +217,15 @@ main {
 .detail-value {
     font-size: 0.95rem;
     color: var(--ink);
+}
+
+.event-detail-charity {
+    grid-column: 1 / -1;
+}
+
+.detail-value-charity {
+    color: var(--rust);
+    font-weight: 500;
 }
 
 /* ── Menu ───────────────────────────────────────────────── */

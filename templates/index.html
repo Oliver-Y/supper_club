@@ -18,16 +18,16 @@
             <span class="detail-label">Seats Left</span>
             <span class="detail-value">{{ spots_left }}</span>
         </div>
+        {% if event.charity %}
+        <div class="event-detail event-detail-charity">
+            <span class="detail-label">Benefiting</span>
+            <span class="detail-value detail-value-charity">{{ event.charity }}</span>
+        </div>
+        {% endif %}
     </div>
 
     {% if event.menu_description and event.menu_description != 'TBD' %}
     <p class="event-blurb">{{ event.menu_description }}</p>
-    {% endif %}
-
-    {% if event.charity %}
-    <p class="event-charity">
-        All proceeds benefit <strong>{{ event.charity }}</strong>
-    </p>
     {% endif %}
 
     {% if spots_left > 0 %}
